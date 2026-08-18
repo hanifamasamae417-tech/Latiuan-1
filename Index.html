@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Pasar Buah - คำศัพท์ผลไม้ภาษามลายู</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Noto+Sans+Thai:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sand:#FBF3E4;
+    --sand-dark:#F2E4CC;
+    --ink:#1B4B43;
+    --ink-soft:#3C6B60;
+    --mango:#F2A93B;
+    --mango-dark:#B87415;
+    --hibiscus:#D6456C;
+    --hibiscus-dark:#93213C;
+    --leaf:#4C8C4A;
+    --leaf-dark:#2E5C2C;
+    --amber:#C79A1E;
+    --amber-dark:#8A6A0E;
+    --card:#FFFDF8;
+    --line:#E4D3AE;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 8% 12%, rgba(76,140,74,0.10) 0, transparent 40%),
+      radial-gradient(circle at 92% 85%, rgba(214,69,108,0.10) 0, transparent 42%),
+      var(--sand);
+    font-family:'Plus Jakarta Sans','Noto Sans Thai',sans-serif;
+    color:var(--ink);
+    padding:0 0 4rem;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:2rem 1.25rem;}
+
+  header{text-align:center;margin-bottom:2rem;}
+  .eyebrow{
+    font-family:'Noto Sans Thai',sans-serif;
+    letter-spacing:.08em;
+    font-size:13px;
+    font-weight:700;
+    color:var(--hibiscus-dark);
+    text-transform:uppercase;
+  }
+  h1{
+    font-family:'Fraunces','Noto Sans Thai',serif;
+    font-weight:700;
+    font-size:38px;
+    line-height:1.15;
+    margin:.4rem 0 .6rem;
+    color:var(--ink);
+  }
+  h1 em{font-style:italic;color:var(--mango-dark);}
+  .sub{
+    font-family:'Noto Sans Thai',sans-serif;
+    font-size:15.5px;
+    color:var(--ink-soft);
+    max-width:540px;
+    margin:0 auto;
+    line-height:1.7;
+  }
+
+  .stalls{
+    display:flex; justify-content:center; gap:6px; margin:1.4rem 0 0;
+    font-size:20px; opacity:.85;
+  }
+
+  .scoreboard{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--ink); color:var(--sand);
+    border-radius:16px; padding:14px 20px; margin:1.8rem 0 1.6rem;
+    font-family:'Noto Sans Thai',sans-serif;
+  }
+  .scoreboard .label{font-size:12.5px; letter-spacing:.05em; opacity:.75; text-transform:uppercase;}
+  .scoreboard .num{font-family:'Fraunces',serif; font-size:26px; font-weight:700;}
+  .track{
+    flex:1; margin:0 18px; height:8px; background:rgba(255,255,255,.18);
+    border-radius:99px; overflow:hidden;
+  }
+  .track-fill{height:100%; width:0%; background:var(--mango); transition:width .4s ease;}
+
+  .bank{
+    background:var(--card);
+    border:1.5px dashed var(--line);
+    border-radius:18px;
+    padding:16px 18px;
+    margin-bottom:1.8rem;
+  }
+  .bank-label{
+    font-family:'Noto Sans Thai',sans-serif;
+    font-size:12.5px; font-weight:700; color:var(--ink-soft);
+    letter-spacing:.04em; text-transform:uppercase; margin:0 0 10px;
+  }
+  .bank-row{display:flex; flex-wrap:wrap; gap:8px;}
+  .word-chip{
+    font-family:'Fraunces',serif; font-weight:500; font-style:italic;
+    font-size:15.5px; color:var(--ink);
+    background:var(--sand-dark);
+    border:1.5px solid var(--line);
+    border-radius:99px;
+    padding:7px 16px;
+    cursor:pointer;
+    transition:transform .12s ease, background .15s ease, border-color .15s ease;
+  }
+  .word-chip:hover{transform:translateY(-2px); border-color:var(--mango-dark);}
+  .word-chip.used{
+    opacity:.35; text-decoration:line-through; cursor:default;
+    transform:none; background:transparent;
+  }
+  .word-chip.active-target{
+    outline:2px solid var(--mango-dark); outline-offset:1px;
+  }
+
+  .item{
+    background:var(--card);
+    border:1.5px solid var(--line);
+    border-radius:16px;
+    padding:16px 18px;
+    margin-bottom:12px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .item-top{display:flex; align-items:center; gap:14px;}
+  .item.selected{border-color:var(--mango-dark); background:#FFFAF0;}
+  .item.correct{border-color:var(--leaf); background:#F1F8EE;}
+  .item.wrong-flash{border-color:var(--hibiscus); background:#FCECEF;}
+
+  .idx{
+    font-family:'Fraunces',serif; font-weight:700; font-size:14px;
+    color:var(--sand); background:var(--ink-soft);
+    width:26px; height:26px; min-width:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .item.correct .idx{background:var(--leaf-dark);}
+
+  .prompt{flex:1; min-width:0;}
+  .th-word{font-family:'Noto Sans Thai',sans-serif; font-weight:700; font-size:17px;}
+  .blank-row{display:flex; align-items:center; gap:8px; margin-top:4px; flex-wrap:wrap;}
+  .blank{
+    font-family:'Fraunces',serif; font-style:italic; font-size:15px;
+    min-width:90px; border-bottom:2px solid var(--line);
+    padding:2px 4px; color:var(--ink-soft);
+  }
+  .item.correct .blank{color:var(--leaf-dark); border-color:var(--leaf); font-weight:700;}
+  .item.wrong-flash .blank{color:var(--hibiscus-dark); border-color:var(--hibiscus);}
+
+  .hint-btn{
+    font-family:'Noto Sans Thai',sans-serif; font-size:12px; font-weight:700;
+    color:var(--mango-dark); background:none; border:none; cursor:pointer;
+    padding:2px 0; text-decoration:underline; text-underline-offset:3px;
+  }
+  .hint-text{
+    font-family:'Noto Sans Thai',sans-serif; font-size:13px; color:var(--ink-soft);
+    margin-top:6px; display:none; line-height:1.6;
+    background:var(--sand-dark); border-radius:10px; padding:8px 12px;
+  }
+  .hint-text.show{display:block;}
+
+  .check{font-size:22px; min-width:24px; text-align:center;}
+
+  .feedback{
+    font-family:'Noto Sans Thai',sans-serif;
+    font-size:13.5px; line-height:1.6;
+    margin-top:10px; padding:9px 13px;
+    border-radius:10px; display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.fb-correct{background:#E7F4E4; color:var(--leaf-dark);}
+  .feedback.fb-wrong{background:#FBE7EC; color:var(--hibiscus-dark);}
+  .feedback b{font-family:'Fraunces',serif; font-style:italic; font-weight:500;}
+
+  .tips{
+    background:var(--ink); color:var(--sand);
+    border-radius:18px; padding:20px 22px; margin-top:2rem;
+    font-family:'Noto Sans Thai',sans-serif;
+  }
+  .tips h2{
+    font-family:'Fraunces',serif; font-size:19px; font-weight:700;
+    margin:0 0 4px; color:var(--mango);
+  }
+  .tips p.lead{font-size:13.5px; opacity:.8; margin:0 0 14px;}
+  .tips ul{margin:0; padding:0; list-style:none;}
+  .tips li{
+    font-size:14px; line-height:1.65; padding:9px 0;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  .tips li:first-child{border-top:none;}
+  .tips b{color:var(--mango); font-family:'Fraunces',serif; font-style:italic; font-weight:500;}
+
+  .celebrate{
+    display:none; text-align:center; margin-top:1.6rem;
+    background:var(--leaf); color:#fff; border-radius:16px; padding:22px;
+    font-family:'Noto Sans Thai',sans-serif;
+  }
+  .celebrate.show{display:block;}
+  .celebrate .big{font-family:'Fraunces',serif; font-weight:700; font-size:24px; margin-bottom:4px;}
+  .reset-btn{
+    margin-top:14px; font-family:'Noto Sans Thai',sans-serif; font-weight:700;
+    background:#fff; color:var(--leaf-dark); border:none; border-radius:99px;
+    padding:9px 22px; cursor:pointer; font-size:14px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">ใบงานที่ 1 · แบบฝึกหัดโต้ตอบ</div>
+    <h1>Pasar Buah <em>ตลาดผลไม้</em></h1>
+    <p class="sub">แตะคำศัพท์มลายูในคลังคำด้านล่าง แล้วแตะข้อคำถามที่ต้องการตอบ ระบบจะให้ feedback ทันทีว่าคำนั้นแปลว่าอะไร ถ้าไม่แน่ใจกดปุ่ม "คำใบ้" ได้</p>
+    <div class="stalls">🥭 🍌 🍏 🍉 🍈 🍊 🍇 🥥 🍍 —</div>
+  </header>
+
+  <div class="scoreboard">
+    <div>
+      <div class="label">คะแนน</div>
+      <div class="num"><span id="score">0</span> / 10</div>
+    </div>
+    <div class="track"><div class="track-fill" id="track-fill"></div></div>
+    <div style="font-size:26px;" id="scoreboard-icon">🧺</div>
+  </div>
+
+  <div class="bank">
+    <p class="bank-label">คลังคำศัพท์ · แตะคำที่ต้องการก่อน แล้วแตะข้อที่ต้องการตอบ</p>
+    <div class="bank-row" id="bank-row"></div>
+  </div>
+
+  <div id="items"></div>
+
+  <div class="celebrate" id="celebrate">
+    <div class="big">🎉 Tahniah!</div>
+    <div>Semua jawapan betul! คุณจับคู่คำศัพท์ผลไม้ภาษามลายูได้ถูกต้องครบทั้ง 10 ข้อ</div>
+    <button class="reset-btn" onclick="resetAll()">เล่นอีกครั้ง</button>
+  </div>
+
+  <div class="tips">
+    <h2>เคล็ดลับช่วยจำ</h2>
+    <p class="lead">ลองผูกคำมลายูแต่ละคำเข้ากับเรื่องที่คุ้นเคย จะจำได้ง่ายและไม่ลืม</p>
+    <ul id="tips-list"></ul>
+  </div>
+
+</div>
+
+<script>
+const data = [
+  {th:"มะม่วง", ms:"mangga", hint:"ขึ้นต้นด้วยตัว m — ออกเสียงใกล้เคียงกับคำว่า mango ในภาษาอังกฤษมาก", tip:"<b>mangga</b> ออกเสียงคล้าย mango จำง่ายเพราะใกล้เคียงคำอังกฤษ"},
+  {th:"กล้วย", ms:"pisang", hint:"ขึ้นต้นด้วยตัว p — เป็นคำที่ใช้ทั่วเอเชียตะวันออกเฉียงใต้แถบเกาะ", tip:"<b>pisang</b> เป็นคำร่วมตระกูลที่พบได้ทั้งในภาษามลายูและอินโดนีเซีย"},
+  {th:"แอปเปิล", ms:"epal", hint:"ขึ้นต้นด้วยตัว e — สั้นกว่าคำว่า apple เพียงตัดเสียง a หน้าออก", tip:"<b>epal</b> มาจากคำว่า apple ตัดพยางค์แรกออกแล้วปรับเสียง"},
+  {th:"แตงโม", ms:"tembikai", hint:"ขึ้นต้นด้วยตัว t — เป็นคำยาว 3 พยางค์ ลองแยกเป็น tem-bi-kai", tip:"<b>tembikai</b> คำยาว ลองท่องแยกพยางค์ tem-bi-kai จะจำง่ายขึ้น"},
+  {th:"มะละกอ", ms:"betik", hint:"ขึ้นต้นด้วยตัว b — คำสั้น 2 พยางค์", tip:"<b>betik</b> คำสั้นเพียง 2 พยางค์ จำง่ายที่สุดคำหนึ่ง"},
+  {th:"ส้ม", ms:"oren", hint:"ขึ้นต้นด้วยตัว o — ออกเสียงใกล้เคียงคำว่า orange", tip:"<b>oren</b> ออกเสียงใกล้กับคำว่า orange ในภาษาอังกฤษ"},
+  {th:"องุ่น", ms:"anggur", hint:"ขึ้นต้นด้วยตัว a — มีเสียง 'งู' แฝงอยู่กลางคำ (ang-gur)", tip:"<b>anggur</b> ลองฟังเสียง 'อัง-กูร' คล้ายมีคำว่า 'งู' ซ่อนอยู่"},
+  {th:"ทุเรียน", ms:"durian", hint:"เหมือนคำไทยเกือบทุกตัวอักษร แค่ปรับสำเนียงเล็กน้อย", tip:"<b>durian</b> เขียนและออกเสียงใกล้เคียงคำไทยมากที่สุด แทบไม่ต้องท่องจำ"},
+  {th:"สับปะรด", ms:"nanas", hint:"ขึ้นต้นด้วยตัว n — คล้ายคำว่า ananas ที่ใช้ในหลายภาษาแถบยุโรป", tip:"<b>nanas</b> ใกล้เคียงคำว่า ananas ที่ใช้เรียกสับปะรดในหลายภาษา"},
+  {th:"เงาะ", ms:"rambutan", hint:"มาจากคำว่า rambut ที่แปลว่า 'ผม' เพราะเปลือกผลไม้มีขนคล้ายผมยุ่ง", tip:"<b>rambutan</b> มาจากคำว่า rambut แปลว่า 'ผม' เพราะเปลือกมีขนรุงรังเหมือนผมยุ่ง"}
+];
+
+// map: malay word -> thai meaning, for specific wrong-answer feedback
+const meaning = {};
+data.forEach(d => meaning[d.ms] = d.th);
+
+let selectedWord = null;
+let selectedChipEl = null;
+let activeItem = null;
+let solved = new Set();
+
+const bankRow = document.getElementById('bank-row');
+const itemsEl = document.getElementById('items');
+const tipsList = document.getElementById('tips-list');
+
+function shuffled(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+const bankWords = shuffled(data.map(d=>d.ms));
+
+function buildBank(){
+  bankRow.innerHTML = '';
+  bankWords.forEach(word=>{
+    const chip = document.createElement('button');
+    chip.className = 'word-chip';
+    chip.textContent = word;
+    chip.type = 'button';
+    chip.dataset.word = word;
+    chip.addEventListener('click', ()=>onChipClick(chip, word));
+    bankRow.appendChild(chip);
+  });
+}
+
+function onChipClick(chip, word){
+  if(chip.classList.contains('used')) return;
+  document.querySelectorAll('.word-chip').forEach(c=>c.classList.remove('active-target'));
+  chip.classList.add('active-target');
+  selectedWord = word;
+  selectedChipEl = chip;
+  if(activeItem !== null) tryAnswer(activeItem);
+}
+
+function buildItems(){
+  itemsEl.innerHTML = '';
+  data.forEach((d, i)=>{
+    const row = document.createElement('div');
+    row.className = 'item';
+    row.dataset.index = i;
+    row.innerHTML = `
+      <div class="item-top">
+        <div class="idx">${i+1}</div>
+        <div class="prompt">
+          <div class="th-word">${d.th}</div>
+          <div class="blank-row">
+            <span class="blank" data-blank="${i}">________</span>
+            <button class="hint-btn" data-hintbtn="${i}" type="button">คำใบ้</button>
+          </div>
+          <div class="hint-text" data-hint="${i}">${d.hint}</div>
+        </div>
+        <div class="check" data-check="${i}"></div>
+      </div>
+      <div class="feedback" data-feedback="${i}"></div>
+    `;
+    row.addEventListener('click', (e)=>{
+      if(e.target.closest('.hint-btn')) return;
+      if(solved.has(i)) return;
+      document.querySelectorAll('.item').forEach(it=>it.classList.remove('selected'));
+      row.classList.add('selected');
+      activeItem = i;
+      if(selectedWord) tryAnswer(i);
+    });
+    itemsEl.appendChild(row);
+  });
+
+  document.querySelectorAll('.hint-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = btn.dataset.hintbtn;
+      document.querySelector(`[data-hint="${idx}"]`).classList.toggle('show');
+    });
+  });
+}
+
+function tryAnswer(index){
+  if(!selectedWord) return;
+  const row = itemsEl.querySelector(`.item[data-index="${index}"]`);
+  const blank = row.querySelector('.blank');
+  const check = row.querySelector('.check');
+  const fb = row.querySelector('.feedback');
+  const correctWord = data[index].ms;
+  const correctTh = data[index].th;
+
+  if(selectedWord === correctWord){
+    blank.textContent = selectedWord;
+    row.classList.remove('selected','wrong-flash');
+    row.classList.add('correct');
+    check.textContent = '✓';
+    fb.className = 'feedback show fb-correct';
+    fb.innerHTML = `🟢 Betul! <b>${selectedWord}</b> แปลว่า "${correctTh}" ในภาษามลายู`;
+    solved.add(index);
+    selectedChipEl.classList.add('used');
+    selectedChipEl.classList.remove('active-target');
+    row.style.pointerEvents = 'none';
+    updateScore();
+  } else {
+    row.classList.add('wrong-flash');
+    check.textContent = '✕';
+    fb.className = 'feedback show fb-wrong';
+    fb.innerHTML = `🔴 Belum tepat! <b>${selectedWord}</b> แปลว่า "${meaning[selectedWord]}" ไม่ใช่ "${correctTh}" ลองเลือกคำอื่นดูอีกครั้ง`;
+    setTimeout(()=>{
+      row.classList.remove('wrong-flash');
+      check.textContent = '';
+    }, 900);
+  }
+  selectedWord = null;
+  selectedChipEl && selectedChipEl.classList.remove('active-target');
+  selectedChipEl = null;
+}
+
+function updateScore(){
+  const n = solved.size;
+  document.getElementById('score').textContent = n;
+  document.getElementById('track-fill').style.width = (n*10)+'%';
+  document.getElementById('scoreboard-icon').textContent = n===10 ? '🎉' : '🧺';
+  if(n===10){
+    document.getElementById('celebrate').classList.add('show');
+  }
+}
+
+function buildTips(){
+  tipsList.innerHTML = '';
+  data.forEach(d=>{
+    const li = document.createElement('li');
+    li.innerHTML = d.tip;
+    tipsList.appendChild(li);
+  });
+}
+
+function resetAll(){
+  solved = new Set();
+  selectedWord = null;
+  selectedChipEl = null;
+  activeItem = null;
+  document.getElementById('celebrate').classList.remove('show');
+  document.getElementById('score').textContent = '0';
+  document.getElementById('track-fill').style.width = '0%';
+  document.getElementById('scoreboard-icon').textContent = '🧺';
+  document.querySelectorAll('.feedback').forEach(f=>{ f.className='feedback'; f.innerHTML=''; });
+  bankWords.length = 0;
+  bankWords.push(...shuffled(data.map(d=>d.ms)));
+  buildBank();
+  buildItems();
+}
+
+buildBank();
+buildItems();
+buildTips();
+</script>
+</body>
+</html>
